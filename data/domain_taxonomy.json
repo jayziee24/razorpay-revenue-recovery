@@ -1,0 +1,194 @@
+{
+  "card_decline_codes": {
+    "insufficient_funds": {
+      "description": "Account lacked balance",
+      "auto_retry_safe": true,
+      "retry_strategy": "delayed_retry"
+    },
+    "card_expired": {
+      "description": "Card past validity",
+      "auto_retry_safe": false,
+      "retry_strategy": "requires_new_card"
+    },
+    "card_declined": {
+      "description": "Generic issuer decline, no reason given",
+      "auto_retry_safe": false,
+      "retry_strategy": "alternate_method"
+    },
+    "payment_failed": {
+      "description": "Declined by customer's bank",
+      "auto_retry_safe": false,
+      "retry_strategy": "alternate_method"
+    },
+    "payment_risk_check_failed": {
+      "description": "Bank flagged as fraudulent",
+      "auto_retry_safe": false,
+      "retry_strategy": "NEVER_RETRY",
+      "hard_stop": true
+    },
+    "debit_instrument_blocked": {
+      "description": "Card blocked by bank/customer",
+      "auto_retry_safe": false,
+      "retry_strategy": "requires_customer_action"
+    },
+    "authentication_failed": {
+      "description": "Wrong OTP / abandoned auth",
+      "auto_retry_safe": true,
+      "retry_strategy": "retry_with_reminder"
+    },
+    "incorrect_cvv": {
+      "description": "Wrong CVV entered",
+      "auto_retry_safe": true,
+      "retry_strategy": "retry_with_reminder"
+    },
+    "card_not_enrolled": {
+      "description": "Card not activated for online use",
+      "auto_retry_safe": false,
+      "retry_strategy": "requires_customer_action"
+    },
+    "card_disabled_for_online_payments": {
+      "description": "Card not enabled for online txns",
+      "auto_retry_safe": false,
+      "retry_strategy": "requires_customer_action"
+    },
+    "transaction_limit_exceeded": {
+      "description": "Daily card limit hit",
+      "auto_retry_safe": true,
+      "retry_strategy": "retry_next_day_or_alt_method"
+    },
+    "bank_technical_error": {
+      "description": "Bank-side infra downtime",
+      "auto_retry_safe": true,
+      "retry_strategy": "retry_short_delay"
+    },
+    "gateway_technical_error": {
+      "description": "Gateway/partner bank downtime",
+      "auto_retry_safe": true,
+      "retry_strategy": "retry_short_delay"
+    },
+    "payment_cancelled": {
+      "description": "Customer backed out",
+      "auto_retry_safe": false,
+      "retry_strategy": "treat_as_dropoff"
+    },
+    "payment_timed_out": {
+      "description": "Exceeded ~10 min window",
+      "auto_retry_safe": true,
+      "retry_strategy": "retry"
+    }
+  },
+  "upi_decline_codes": {
+    "insufficient_funds": {
+      "description": "Low balance",
+      "auto_retry_safe": true,
+      "retry_strategy": "delayed_retry"
+    },
+    "invalid_vpa": {
+      "description": "Customer not registered on UPI app",
+      "auto_retry_safe": false,
+      "retry_strategy": "requires_registration"
+    },
+    "payment_declined": {
+      "description": "Debit failed at bank",
+      "auto_retry_safe": true,
+      "retry_strategy": "limited_retry"
+    },
+    "payment_cancelled": {
+      "description": "Customer backed out",
+      "auto_retry_safe": false,
+      "retry_strategy": "treat_as_dropoff"
+    },
+    "payment_collect_request_expired": {
+      "description": ">10 min limit exceeded",
+      "auto_retry_safe": true,
+      "retry_strategy": "retry"
+    },
+    "payment_timed_out": {
+      "description": ">10 min limit exceeded",
+      "auto_retry_safe": true,
+      "retry_strategy": "retry"
+    },
+    "bank_technical_error": {
+      "description": "UPI provider downtime",
+      "auto_retry_safe": true,
+      "retry_strategy": "retry_short_delay"
+    },
+    "gateway_technical_error": {
+      "description": "Gateway downtime",
+      "auto_retry_safe": true,
+      "retry_strategy": "retry_short_delay"
+    },
+    "vpa_resolution_failed": {
+      "description": "Technical VPA issue",
+      "auto_retry_safe": false,
+      "retry_strategy": "escalate"
+    },
+    "customer_bank_account_mismatch": {
+      "description": "Wrong account selected",
+      "auto_retry_safe": false,
+      "retry_strategy": "requires_customer_correction"
+    }
+  },
+  "error_object_schema": {
+    "fields": [
+      "code",
+      "description",
+      "field",
+      "source",
+      "step",
+      "reason",
+      "metadata"
+    ],
+    "source_values": [
+      "customer",
+      "bank",
+      "business",
+      "internal",
+      "gateway",
+      "issuer_bank"
+    ]
+  },
+  "mandate_rules": {
+    "retry_cap": {
+      "max_attempts_per_cycle": 4,
+      "description": "1 original + 3 retries max (NPCI, tightened Aug 2025). After exhaustion, hard stop, must escalate."
+    },
+    "afa_thresholds": {
+      "standard_afa_free_limit_inr": 15000,
+      "extended_afa_free_limit_inr": 100000,
+      "extended_categories": [
+        "credit_card_bills",
+        "mutual_funds",
+        "insurance",
+        "loan_emi"
+      ],
+      "description": "Debits above applicable threshold require Additional Factor Authentication; agent cannot silently auto-charge."
+    },
+    "pre_debit_notification": {
+      "required_hours_before_debit": 24,
+      "mandatory": true
+    },
+    "retry_spacing": {
+      "recommended_windows_hours": [24, 72, 168],
+      "description": "Retries should be spaced (not rapid-fire) to align with likely salary-credit timing and avoid NPCI spam flags."
+    },
+    "mandate_states": [
+      "created",
+      "authorized",
+      "active",
+      "paused",
+      "revoked",
+      "expired"
+    ],
+    "debit_states": ["debit_success", "debit_failure"],
+    "terminal_states_no_retry": ["revoked", "expired"]
+  },
+  "loss_categories": [
+    "payment_degradation",
+    "checkout_dropoff",
+    "subscription_fail",
+    "mandate_retry",
+    "receivable_overdue",
+    "promise_to_pay"
+  ]
+}
