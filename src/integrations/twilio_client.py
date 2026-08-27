@@ -8,7 +8,7 @@ recipient has joined it. That's why this is wired for ONE demo-verified
 number, not the whole synthetic batch — we don't have 50 real verified
 phone numbers, and shouldn't pretend otherwise.
 """
-
+from __future__ import annotations
 import os
 from typing import Any
 from dotenv import load_dotenv

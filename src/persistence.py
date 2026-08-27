@@ -23,7 +23,7 @@ from pathlib import Path
 from typing import AsyncGenerator, Any, Sequence
 import asyncio
 
-DB_PATH = Path(__file__).parent.parent / "recovery.db"
+DB_PATH = Path(__file__).parent.parent / "data" / "recovery_ledger.db"
 
 # In-process per-record locks to emulate a single-writer rule.
 _record_locks: dict[str, asyncio.Lock] = {}
@@ -55,7 +55,7 @@ def init_db() -> None:
     )
     cur.execute(
         """
-        CREATE TABLE IF NOT EXISTS audit_entries (
+        CREATE TABLE IF NOT EXISTS audit_log (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             record_id TEXT,
             timestamp TEXT,
@@ -69,7 +69,7 @@ def init_db() -> None:
     )
     cur.execute(
         """
-        CREATE TABLE IF NOT EXISTS nudges (
+        CREATE TABLE IF NOT EXISTS nudge_log (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             record_id TEXT,
             channel TEXT,
@@ -107,7 +107,7 @@ async def count_nudges_today(record_id: str, since_midnight_utc_iso: str) -> int
     def _count() -> int:
         conn = _get_conn()
         cur = conn.cursor()
-        cur.execute("SELECT COUNT(1) as c FROM nudges WHERE record_id = ? AND sent_at >= ?", (record_id, since_midnight_utc_iso))
+        cur.execute("SELECT COUNT(1) as c FROM nudge_log WHERE record_id = ? AND sent_at >= ?", (record_id, since_midnight_utc_iso))
         row = cur.fetchone()
         conn.close()
         return int(row[0]) if row else 0
@@ -119,7 +119,7 @@ async def record_nudge_sent(record_id: str, channel: str, sent_at_utc_iso: str) 
     def _insert() -> None:
         conn = _get_conn()
         cur = conn.cursor()
-        cur.execute("INSERT INTO nudges (record_id, channel, sent_at) VALUES (?, ?, ?)", (record_id, channel, sent_at_utc_iso))
+        cur.execute("INSERT INTO nudge_log (record_id, channel, sent_at) VALUES (?, ?, ?)", (record_id, channel, sent_at_utc_iso))
         conn.commit()
         conn.close()
 
@@ -163,7 +163,7 @@ async def insert_audit_entries(record_id: str, audit_trail: Sequence[Any]) -> No
         cur = conn.cursor()
         for entry in audit_trail:
             cur.execute(
-                "INSERT INTO audit_entries (record_id, timestamp, node, reasoning, action_taken, outcome, escalated) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO audit_log (record_id, timestamp, node, reasoning, action_taken, outcome, escalated) VALUES (?, ?, ?, ?, ?, ?, ?)",
                 (
                     record_id,
                     entry.get("timestamp"),

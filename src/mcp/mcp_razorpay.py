@@ -19,6 +19,8 @@ coin flip — this is what keeps the final recovery-rate metrics honest
 instead of a suspicious 100%.
 """
 
+from __future__ import annotations
+
 import random
 import uuid
 from typing import Any, Optional

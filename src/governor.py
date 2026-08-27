@@ -16,7 +16,7 @@ typed I/O). validate_action() then checks the CONTENT against policy.
 A malformed action is rejected at the schema layer before policy is
 even consulted — two independent failure modes, both audited.
 """
-
+from __future__ import annotations
 from typing import Literal, Optional, Union, Any, Type, Dict, cast
 from pydantic import BaseModel, Field, ValidationError
 

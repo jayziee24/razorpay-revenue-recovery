@@ -9,7 +9,7 @@ Kept as a TypedDict (not Pydantic) because LangGraph state objects are
 plain dicts under the hood — validation happens at the Governor boundary,
 not here. This node is deterministic bookkeeping only.
 """
-
+from __future__ import annotations
 from typing import TypedDict, Optional, Literal, Any
 from datetime import datetime, timezone
 

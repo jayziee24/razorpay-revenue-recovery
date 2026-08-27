@@ -11,7 +11,7 @@ Auth: reads RAZORPAY_KEY_ID / RAZORPAY_KEY_SECRET from the environment.
 If either is missing, get_client() returns None — callers must check
 for that and fall back to simulation rather than crash.
 """
-
+from __future__ import annotations
 import os
 from typing import Any, Optional
 from dotenv import load_dotenv

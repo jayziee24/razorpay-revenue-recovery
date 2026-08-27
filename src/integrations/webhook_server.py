@@ -15,7 +15,7 @@ Then, only when ready to demo live:
 Until that setup is done, this server can still run locally and will just
 never receive anything — it's not a dependency of the batch pipeline.
 """
-
+from __future__ import annotations
 from fastapi import FastAPI, Request, HTTPException
 import json
 from typing import Any

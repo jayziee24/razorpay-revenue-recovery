@@ -18,6 +18,8 @@ mode the atomic_record_lock in persistence.py was built to prevent
 elsewhere — letting a tool bypass it here would quietly reopen that hole.
 """
 
+from __future__ import annotations
+
 from typing import Any
 import asyncio
 

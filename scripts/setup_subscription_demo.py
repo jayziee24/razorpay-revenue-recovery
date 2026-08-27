@@ -23,6 +23,8 @@ designed to run unattended on a batch — this is the one deliberate
 exception, and it's demo/setup tooling, not part of the pipeline itself.
 """
 
+from __future__ import annotations
+
 import sys
 from pathlib import Path
 

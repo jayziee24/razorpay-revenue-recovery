@@ -7,7 +7,7 @@ merchant's ops team would set. Keep this separate from governor.py's
 hard rules so it's obviously the "adjustable" layer in a demo —
 toggle a value here, show routing change, without touching validation logic.
 """
-
+from __future__ import annotations
 from dataclasses import dataclass
 
 

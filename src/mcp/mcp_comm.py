@@ -14,6 +14,8 @@ every dispatch as guaranteed delivery would be the same "100% success"
 problem as the payment retries, just in a different tool.
 """
 
+from __future__ import annotations
+
 import random
 import uuid
 import os
